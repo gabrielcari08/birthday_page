@@ -49,7 +49,7 @@ def welcome_view(request):
 
 @login_required(login_url='/')
 def home_view(request):
-    cards = Card.objects.filter(user=request.user).order_by('created_at')
+    cards = Card.objects.all().order_by('created_at')
     return render(request, 'home.html', {'cards': cards})
 
 
