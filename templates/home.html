@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Mis Cartas{% endblock %}
+{% block title %}Feliz Cumple Calu{% endblock %}
 
 {% block content %}
 <div class="home-container">
@@ -8,7 +8,6 @@
         <span class="title-heart">💕</span>
         <h1 class="page-title">Feliz Cumple Calu</h1>
         <span class="title-heart">💕</span>
-        <a href="{% url 'logout' %}" class="logout-btn">Salir</a>
     </header>
 
     {% if cards %}
@@ -18,7 +17,7 @@
         <div class="cards-container">
             {% for card in cards %}
             <div class="card" data-index="{{ forloop.counter0 }}">
-                <img src="{{ card.image.url }}" alt="Carta {{ forloop.counter }}" onclick="openImageModal(this.src)">
+                <img src="{{ card.image }}" alt="Carta {{ forloop.counter }}" onclick="openImageModal(this.src)">
                 <div class="card-text">{{ card.text }}</div>
             </div>
             {% endfor %}
@@ -30,8 +29,6 @@
     <div class="card-counter">
         <span id="current-card">1</span> / {{ cards|length }}
     </div>
-    {% else %}
-    <p class="empty-message">No hay cartas todavía. Agrega una desde el panel de admin.</p>
     {% endif %}
 </div>
 
@@ -72,7 +69,7 @@ if (totalCards > 0) {
 }
 
 document.addEventListener('click', function(e) {
-    if (!e.target.closest('.modal')) {
+    if (!e.target.closest('.modal') && !e.target.closest('.carousel-btn') && !e.target.closest('.card')) {
         createHeart(e.clientX, e.clientY);
     }
 });
