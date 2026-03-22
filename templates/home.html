@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Cartas{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <header class="header">
+        <span class="title-heart">💕</span>
+        <h1 class="page-title">Feliz Cumple Calu</h1>
+        <span class="title-heart">💕</span>
+        <a href="{% url 'logout' %}" class="logout-btn">Salir</a>
+    </header>
+
+    {% if cards %}
+    <div class="carousel">
+        <button class="carousel-btn prev" onclick="changeCard(-1)">❮</button>
+        
+        <div class="cards-container">
+            {% for card in cards %}
+            <div class="card" data-index="{{ forloop.counter0 }}">
+                <img src="{{ card.image.url }}" alt="Carta {{ forloop.counter }}" onclick="openImageModal(this.src)">
+                <div class="card-text">{{ card.text }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <button class="carousel-btn next" onclick="changeCard(1)">❯</button>
+    </div>
+    
+    <div class="card-counter">
+        <span id="current-card">1</span> / {{ cards|length }}
+    </div>
+    {% else %}
+    <p class="empty-message">No hay cartas todavía. Agrega una desde el panel de admin.</p>
+    {% endif %}
+</div>
+
+<div id="hearts-container"></div>
+
+<div id="image-modal" class="modal" onclick="closeImageModal()">
+    <span class="modal-close" onclick="closeImageModal()">✕</span>
+    <img id="modal-image" src="" alt="Imagen completa">
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentIndex = 0;
+const cards = document.querySelectorAll('.card');
+const totalCards = cards.length;
+
+function showCard(index) {
+    cards.forEach((card, i) => {
+        card.style.display = i === index ? 'block' : 'none';
+    });
+    document.getElementById('current-card').textContent = index + 1;
+}
+
+function changeCard(direction) {
+    if (direction === 1 && currentIndex === totalCards - 1) {
+        return;
+    }
+    if (direction === -1 && currentIndex === 0) {
+        return;
+    }
+    currentIndex = (currentIndex + direction + totalCards) % totalCards;
+    showCard(currentIndex);
+}
+
+if (totalCards > 0) {
+    showCard(0);
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.modal')) {
+        createHeart(e.clientX, e.clientY);
+    }
+});
+
+function openImageModal(src) {
+    document.getElementById('modal-image').src = src;
+    document.getElementById('image-modal').style.display = 'flex';
+}
+
+function closeImageModal() {
+    document.getElementById('image-modal').style.display = 'none';
+}
+
+function createHeart(x, y) {
+    const heartsContainer = document.getElementById('hearts-container');
+    const heart = document.createElement('div');
+    heart.className = 'floating-heart';
+    heart.textContent = '❤️';
+    heart.style.left = x + 'px';
+    heart.style.top = y + 'px';
+    heartsContainer.appendChild(heart);
+    
+    setTimeout(() => {
+        heart.remove();
+    }, 2000);
+}
+
+function createFallingHeart() {
+    const heartsContainer = document.getElementById('hearts-container');
+    const heart = document.createElement('div');
+    heart.className = 'falling-heart';
+    const size = Math.random() * 10 + 8;
+    heart.style.fontSize = size + 'px';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.opacity = Math.random() * 0.5 + 0.3;
+    const duration = Math.random() * 5 + 8;
+    heart.style.animationDuration = duration + 's';
+    heart.textContent = ['❤️', '💕', '💗', '💖'][Math.floor(Math.random() * 4)];
+    heartsContainer.appendChild(heart);
+    
+    setTimeout(() => {
+        heart.remove();
+    }, duration * 1000);
+}
+
+setInterval(createFallingHeart, 800);
+</script>
+{% endblock %}

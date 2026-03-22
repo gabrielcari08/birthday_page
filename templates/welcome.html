@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Bienvenido{% endblock %}
+
+{% block content %}
+<div class="welcome-container">
+    <h1 class="title">Feliz Cumpleaños 💕</h1>
+    
+    <div class="forms-container">
+        <div class="form-box">
+            <h2>Iniciar Sesión</h2>
+            {% if login_error %}
+                <p class="error-message">{{ login_error }}</p>
+            {% endif %}
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="login">
+                <input type="text" name="username" placeholder="Usuario" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <button type="submit" class="btn btn-login">Ingresar</button>
+            </form>
+        </div>
+
+        <div class="divider">
+            <span>ó</span>
+        </div>
+
+        <div class="form-box">
+            <h2>Registrarse</h2>
+            {% if register_error %}
+                <p class="error-message">{{ register_error }}</p>
+            {% endif %}
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="register">
+                <input type="text" name="username" placeholder="Usuario" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <input type="password" name="password_confirm" placeholder="Confirmar Contraseña" required>
+                <button type="submit" class="btn btn-register">Registrarse</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
